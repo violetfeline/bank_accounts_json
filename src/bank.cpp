@@ -17,7 +17,7 @@ Bank::Bank(const std::string db) :
 
 bool Bank::read_db() {
   std::ifstream ifs(db_file);
-  if(ifs.is_open()) {
+  if (ifs.is_open()) {
     ifs >> json_container;
     ifs.close();
     return true;
@@ -27,7 +27,7 @@ bool Bank::read_db() {
 
 bool Bank::write_db() {
   std::ofstream ofs(db_file);
-  if(ofs.is_open()) {
+  if (ofs.is_open()) {
     ofs << json_container.dump(2);
     ofs.close();
     return true;
@@ -87,7 +87,7 @@ bool Bank::update_account() {
 
 void Bank::print_customer_list() {
   std::cout << "id\tfirst_name\tlast_name\n";
-  for(int i = 0; i < json_container["accounts"].size(); i++) {
+  for (int i = 0; i < json_container["accounts"].size(); i++) {
     std::cout << json_container["accounts"][i]["id"] << "\t"
               << static_cast<std::string>(json_container["accounts"][i]["first_name"]) << "\t\t"
               << static_cast<std::string>(json_container["accounts"][i]["last_name"]) << "\n";
@@ -101,10 +101,16 @@ void Bank::start() {
     std::cin >> option;
     switch (option) {
       case 1:
-        create_account();
+        if (create_account())
+          std::cout << "Account created succesfully\n";
+        else
+          std::cout << "Failed to create new account\n";
         break;
       case 2:
-        update_account();
+        if (update_account())
+          std::cout << "Account updated succesfully\n";
+        else
+          std::cout << "Failed to update the account\n";
         break;
       case 6:
         print_customer_list();
