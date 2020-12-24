@@ -55,7 +55,7 @@ bool Bank::create_account() {
   // Find next useable id
   for (int i = 0; i < accs_quantity; i++) {
     unsigned i_id = json_container["accounts"][i]["id"];
-    if (i_id > next_id)
+    if (i_id >= next_id)
       next_id = i_id + 1;
   }
   acc.input_form(next_id);
