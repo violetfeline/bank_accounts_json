@@ -48,15 +48,15 @@ void Bank::welcome_message() {
                  "Enter your choice: ";
 }
 
-bool Bank::id_exists(unsigned id) {
-  bool found = false;
+long int Bank::find_index(unsigned id) {
+  long int index = -1;
   for (int i = 0; i < json_container["accounts"].size(); i++) {
     if (json_container["accounts"][i]["id"] == id) {
-      found = true;
+      index = i;
       break;
     }
   }
-  return found;
+  return index;
 }
 
 bool Bank::create_account() {
@@ -78,10 +78,11 @@ bool Bank::update_account() {
   unsigned id;
   std::cout << "Enter account id: ";
   std::cin >> id;
-  if (id_exists(id)) {
-    Account acc(json_container["accounts"][id]);
+  long int index = find_index(id);
+  if (index >= 0) {
+    Account acc(json_container["accounts"][index]);
     acc.update_form(id);
-    json_container["accounts"][id] = acc.dump();
+    json_container["accounts"][index] = acc.dump();
     return write_db();
   } else {
     std::cout << "No account with id " << id << "\n";
@@ -93,7 +94,7 @@ bool Bank::transfer_funds() {
   unsigned src_id;
   std::cout << "Source account: ";
   std::cin >> src_id;
-  if (!id_exists(src_id)) {
+  if (find_index(src_id) == -1) {
     std::cout << "No account with id " << src_id;
     return false;
   }
@@ -101,7 +102,7 @@ bool Bank::transfer_funds() {
   unsigned dst_id;
   std::cout << "Destination account: ";
   std::cin >> dst_id;
-  if (!id_exists(dst_id)) {
+  if (find_index(dst_id) == -1) {
     std::cout << "No account with id " << dst_id;
     return false;
   }

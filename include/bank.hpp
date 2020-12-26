@@ -12,7 +12,7 @@ private:
   bool read_db();
   bool write_db();
   void welcome_message();
-  bool id_exists(unsigned id);
+  long int find_index(unsigned id);
   bool create_account();
   bool update_account();
   bool transfer_funds();
