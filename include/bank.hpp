@@ -16,6 +16,7 @@ private:
   bool create_account();
   bool update_account();
   bool transfer_funds();
+  void account_details();
   void print_customer_list();
 public:
   Bank(const std::string db);

@@ -129,6 +129,16 @@ bool Bank::transfer_funds() {
   return write_db();
 }
 
+void Bank::account_details() {
+  unsigned id;
+  std::cout << "Enter account id: ";
+  std::cin >> id;
+  long int index = find_index(id);
+  if (index >= 0) {
+    std::cout << json_container["accounts"][index].dump(2) << "\n";
+  }
+}
+
 void Bank::print_customer_list() {
   std::cout << "id\tfirst_name\tlast_name\n";
   for (int i = 0; i < json_container["accounts"].size(); i++) {
@@ -161,6 +171,9 @@ void Bank::start() {
           std::cout << "Funds transfered succesfully\n";
         else
           std::cout << ". Transaction failed\n";
+        break;
+      case 4:
+        account_details();
         break;
       case 6:
         print_customer_list();
