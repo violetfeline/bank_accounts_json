@@ -17,6 +17,7 @@ private:
   bool update_account();
   bool transfer_funds();
   void account_details();
+  bool remove_account();
   void print_customer_list();
 public:
   Bank(const std::string db);

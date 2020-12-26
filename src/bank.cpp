@@ -50,7 +50,7 @@ void Bank::welcome_message() {
 
 long int Bank::find_index(unsigned id) {
   long int index = -1;
-  for (int i = 0; i < json_container["accounts"].size(); i++) {
+  for (long int i = 0; i < json_container["accounts"].size(); i++) {
     if (json_container["accounts"][i]["id"] == id) {
       index = i;
       break;
@@ -92,7 +92,7 @@ bool Bank::update_account() {
 
 bool Bank::transfer_funds() {
   unsigned src_id;
-  std::cout << "Source account: ";
+  std::cout << "Source account id: ";
   std::cin >> src_id;
   if (find_index(src_id) == -1) {
     std::cout << "No account with id " << src_id;
@@ -100,7 +100,7 @@ bool Bank::transfer_funds() {
   }
 
   unsigned dst_id;
-  std::cout << "Destination account: ";
+  std::cout << "Destination account id: ";
   std::cin >> dst_id;
   if (find_index(dst_id) == -1) {
     std::cout << "No account with id " << dst_id;
@@ -139,6 +139,25 @@ void Bank::account_details() {
   }
 }
 
+bool Bank::remove_account() {
+  unsigned id;
+  std::cout << "Enter account id: ";
+  std::cin >> id;
+  if (find_index(id) >= 0) {
+    json new_json_container;
+    long int next_index = 0;
+    for (long int i = 0; i < json_container["accounts"].size(); i++) {
+      if (json_container["accounts"][i]["id"] != id)
+        new_json_container["accounts"][next_index++] = json_container["accounts"][i];
+    }
+    json_container = new_json_container;
+    return write_db();
+  } else {
+    std::cout << "No account with id " << id << "\n";
+    return false;
+  }
+}
+
 void Bank::print_customer_list() {
   std::cout << "id\tfirst_name\tlast_name\n";
   for (int i = 0; i < json_container["accounts"].size(); i++) {
@@ -174,6 +193,12 @@ void Bank::start() {
         break;
       case 4:
         account_details();
+        break;
+      case 5:
+        if (remove_account())
+          std::cout << "Account removed succesfully\n";
+        else
+          std::cout << "Failed to remove the account\n";
         break;
       case 6:
         print_customer_list();
