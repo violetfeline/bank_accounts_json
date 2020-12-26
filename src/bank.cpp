@@ -48,6 +48,17 @@ void Bank::welcome_message() {
                  "Enter your choice: ";
 }
 
+bool Bank::id_exists(unsigned id) {
+  bool found = false;
+  for (int i = 0; i < json_container["accounts"].size(); i++) {
+    if (json_container["accounts"][i]["id"] == id) {
+      found = true;
+      break;
+    }
+  }
+  return found;
+}
+
 bool Bank::create_account() {
   Account acc;
   unsigned accs_quantity = json_container["accounts"].size();
@@ -65,16 +76,9 @@ bool Bank::create_account() {
 
 bool Bank::update_account() {
   unsigned id;
-  bool found = false;
   std::cout << "Enter account id: ";
   std::cin >> id;
-  for (int i = 0; i < json_container["accounts"].size(); i++) {
-    if (json_container["accounts"][i]["id"] == id) {
-      found = true;
-      break;
-    }
-  }
-  if (found) {
+  if (id_exists(id)) {
     Account acc(json_container["accounts"][id]);
     acc.update_form(id);
     json_container["accounts"][id] = acc.dump();
@@ -83,6 +87,45 @@ bool Bank::update_account() {
     std::cout << "No account with id " << id << "\n";
     return false;
   }
+}
+
+bool Bank::transfer_funds() {
+  unsigned src_id;
+  std::cout << "Source account: ";
+  std::cin >> src_id;
+  if (!id_exists(src_id)) {
+    std::cout << "No account with id " << src_id;
+    return false;
+  }
+
+  unsigned dst_id;
+  std::cout << "Destination account: ";
+  std::cin >> dst_id;
+  if (!id_exists(dst_id)) {
+    std::cout << "No account with id " << dst_id;
+    return false;
+  }
+
+  float amount;
+  float src_balance = json_container["accounts"][src_id]["balance"];
+  float dst_balance = json_container["accounts"][dst_id]["balance"];
+  std::cout << "Enter amount: ";
+  std::cin >> amount;
+  if (amount < 0) {
+    std::cout << "The amount can't be negative";
+    return false;
+  }
+  if (src_balance < amount) {
+    std::cout << "Not enough funds";
+    return false;
+  }
+
+  src_balance -= amount;
+  dst_balance += amount;
+  json_container["accounts"][src_id]["balance"] = src_balance;
+  json_container["accounts"][dst_id]["balance"] = dst_balance;
+
+  return write_db();
 }
 
 void Bank::print_customer_list() {
@@ -111,6 +154,12 @@ void Bank::start() {
           std::cout << "Account updated succesfully\n";
         else
           std::cout << "Failed to update the account\n";
+        break;
+      case 3:
+        if (transfer_funds())
+          std::cout << "Funds transfered succesfully\n";
+        else
+          std::cout << ". Transaction failed\n";
         break;
       case 6:
         print_customer_list();

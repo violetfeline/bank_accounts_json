@@ -12,8 +12,10 @@ private:
   bool read_db();
   bool write_db();
   void welcome_message();
+  bool id_exists(unsigned id);
   bool create_account();
   bool update_account();
+  bool transfer_funds();
   void print_customer_list();
 public:
   Bank(const std::string db);
