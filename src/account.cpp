@@ -62,19 +62,19 @@ void Account::update_form(const unsigned i) {
         json_container["last_name"] = tmp_str;
         break;
       case 3:
+        std::cout << "New age: ";
+        std::cin >> tmp_unsigned;
+        json_container["age"] = tmp_unsigned;
+        break;
+      case 4:
         std::cout << "New address: ";
         std::cin >> tmp_str;
         json_container["address"] = tmp_str;
         break;
-      case 4:
+      case 5:
         std::cout << "New phone: ";
         std::cin >> tmp_unsigned;
         json_container["phone"] = tmp_unsigned;
-        break;
-      case 5:
-        std::cout << "New age: ";
-        std::cin >> tmp_unsigned;
-        json_container["age"] = tmp_unsigned;
         break;
       case 6:
         std::cout << "New balance: ";
